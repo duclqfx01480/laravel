@@ -35,5 +35,10 @@ class Post extends Model
     // 54. Soft Deleting
     protected $dates = ['deleted_at'];
 
+    // 60. Inverse Relation
+    public function user(){
+        return $this->belongsTo('App\Models\User');
+    }
+
     use HasFactory;
 }

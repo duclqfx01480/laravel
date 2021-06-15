@@ -1,11 +1,16 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 
 // CHAPTER 10: ELOQUENT / ORM (OBJECT RELATIONAL MODEL)
 // Dòng bên dưới là của Chapter 10
 use App\Models\Post;
 
+use App\Models\User;
+
+// 67. HasManyThrough
+use App\Models\Country;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -315,5 +320,105 @@ Route::get('/forcedelete', function(){
 });
 
 
+/*
+|--------------------------------------------------------------------------
+| CHAPTER 11: ELOQUENT RELATIONSHIPS
+|--------------------------------------------------------------------------
+*/
 
+// 59. Quan hệ Một-Một (One-to-One Relationship)
+// 1. Tạo thêm cột 'user_id' trong bảng posts
+//   - Bằng cách thêm một cột trong migration create_posts_table
+//   - $table->integer('user_id')->unsigned();
+//   - php artisan migrate:refresh để chạy lại migrate
+// 2. Thêm user vào bảng user
+// 3. Thêm một post vào bảng posts, có user_id
+// 4. Viết hàm post trong app/Models/User.php
+// 5. Viết Route để truy cập & lấy ra post của một user nào đó
+// note: Thêm 'use App\Models\User;'
+// dùng hasOne
+Route::get('/user/{id}/post', function($id){
+    // Trả về các post của id có mã là $id
+    return User::find($id)->post; // truy cập thuộc tính ->title
+});
+
+// 60. Inverse Relation (Đảo ngược quan hệ)
+// Trả về user của một post có id nào đó
+// 1. Viết Route
+Route::get('post/{id}/user', function($id){
+    return Post::find($id)->user; // truy cập thuộc tính ->name
+});
+// 2. Viết hàm user trong app/Models/Post
+// note: dùng belongsTo
+
+
+// 61. Quan hệ Một-Nhiều (One-to-Many Relationship)
+// 1. Viết hàm posts trong app\Models\User
+// 2. Tạo Route
+Route::get('/posts', function(){
+    $user = User::find(1); // Lấy ra user có id là 1
+    foreach($user->posts as $post){
+        echo $post->title . "<br>";
+    }
+});
+
+// 63-64. Quan hệ Nhiều-Nhiều (Many-To-Many Relationship)
+// Mục tiêu: Tạo bảng role
+// 1. Tạo Model Role, -m để tạo migration
+//  Lệnh này vừa tạo ra Model Role, vừa tạo ra một Migration (create_roles_table)
+// php artisan make:model Role -m
+// Trong migration create_roles_table, bổ sung cột name (kiểu string) để lưu tên của role
+
+// 2. Tạo Migration để tạo bảng users_roles (bảng mapping cho quan hệ nhiều-nhiều)
+// php artisan make:migration create_users_roles_table --create=role_user
+// (Tạo ra Migration create_users_roles_table)
+// Trong migration create_users_roles_table thêm hai cột:
+//  - user_id
+//  - role_id
+
+// 3. Chạy Migrate
+// php artisan migrate
+
+// 4. Viết quan hệ trong app\Models\User (public function roles)
+// 5. Viết Route
+Route::get('/user/{id}/role', function($id){
+    $user = User::find($id);//->roles;
+    foreach($user->roles as $role){
+        return $role->name . "<br>";
+    }
+
+//    $user = User::find($id)->roles()->orderBy('id', 'desc')->get();
+//    return $user;
+});
+
+
+// 65. Querying Intermediate Table
+// Invert
+// 1. Viết trong app/Models/Role, hàm users
+// 2. Viết Route
+Route::get('/user/pivot', function(){
+    $user = User::find(1);
+
+    foreach($user->roles as $role){
+        return $role->pivot; //->created_at;
+    }
+});
+
+// 66, 67. Has Many through Relation
+// 1. Tạo Model Country và Migration
+// php artisan make:model Country -m
+// Migration create_countries_table, thêm cột name (tham khảo thêm file)
+// 2. Tạo thêm cột country_id cho bảng user
+// php artisan make:migration add_country_id_column_to_users_table --table=users
+// Viết hàm up và down cho add_country_id_column_to_users_table (tham khảo thêm file)
+// 3. Chạy Migrate
+// php artisan migrate
+// 4. Viết hàm posts trong app/Models/Country
+// 5. Viết Route
+Route::get('/user/country', function(){
+    $country = Country::find(3);
+    foreach($country->posts as $post){
+        echo $post->title . "<br>";
+    }
+});
 
