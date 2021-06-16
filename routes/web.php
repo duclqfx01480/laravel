@@ -422,3 +422,20 @@ Route::get('/user/country', function(){
     }
 });
 
+// 68, 69. Polymorphic Relation
+/* Description (Mục tiêu)
+- Photo: Ảnh ID 1 thuộc về Post này, ảnh ID 2 thuộc về User
+- Tức là photo có thể thuộc về Post, hoặc thuộc về User
+*/
+// 1. Tạo Model - tạo thêm cả migration
+// php artisan make:model Photo -m
+// -> Tạo Migration 2021_06_16_110501_create_photos_table
+// 2. Viết code trong migration create_photos_table
+// Thêm các cột - dòng lệnh từ 18-20
+// 3. Chạy migration
+// php artisan migrate
+// 3.1 Chú ý -> Xem migration create_posts_table (dòng 18 - 20)
+//           -> Triển khai quan hệ đa hình nên tạm comment dòng $table->integer('user_id')->unsigned();
+// 4. Refresh (roll back và chạy lại) Migration do có thay đổi trong Model Post
+// php artisan migrate:refresh
+// 5. Thêm dữ liệu vào DB mySQL vì khi refresh xong sẽ mất hết dữ liệu

@@ -15,7 +15,9 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->unsigned();
+            // 69. Polymorphic Relation
+            // Triển khai quan hệ đa hình nên tạm comment dòng bên dưới (user_id
+            //$table->integer('user_id')->unsigned();
             $table->string('title'); //->unique(), nullable(), default()
             $table->text('content');
             $table->timestamps();
