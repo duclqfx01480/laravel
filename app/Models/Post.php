@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
+    use HasFactory;
     // 54. Soft Deleting
     use SoftDeletes;
 
@@ -40,5 +41,9 @@ class Post extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    use HasFactory;
+    public function photos(){
+        return $this->morphMany('App\Models\Photo', 'imageable');
+    }
+
+
 }

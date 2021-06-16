@@ -439,3 +439,22 @@ Route::get('/user/country', function(){
 // 4. Refresh (roll back và chạy lại) Migration do có thay đổi trong Model Post
 // php artisan migrate:refresh
 // 5. Thêm dữ liệu vào DB mySQL vì khi refresh xong sẽ mất hết dữ liệu
+// 6. Trong model Photo : Tạo Quan hệ cho bảng chính (bảng Photo) ở Photo (app\Models\Photo)
+// 7.Trong model Post : viết hàm trả về photos
+// 8. Trong model User : tương tự
+// 9. Viết Route
+Route::get('/user/photos', function(){
+    $user = User::find(1);
+    //$user = User::all();
+    foreach($user->photos as $photo){
+        return $photo; //->path
+    }
+});
+
+Route::get('/post/{id}/photos', function($id){
+    $post = Post::find($id);
+    foreach($post->photos as $photo){
+        echo $photo->path . "<br>";
+    }
+});
+
