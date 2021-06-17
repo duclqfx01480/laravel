@@ -1,6 +1,7 @@
 <?php
 
 
+
 use Illuminate\Support\Facades\Route;
 
 // CHAPTER 10: ELOQUENT / ORM (OBJECT RELATIONAL MODEL)
@@ -11,6 +12,14 @@ use App\Models\User;
 
 // 67. HasManyThrough
 use App\Models\Country;
+
+// 70.Polymorphic Relation
+use App\Models\Photo;
+use App\Models\Video;
+
+// 74.
+use App\Models\Tag;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -455,6 +464,68 @@ Route::get('/post/{id}/photos', function($id){
     $post = Post::find($id);
     foreach($post->photos as $photo){
         echo $photo->path . "<br>";
+    }
+});
+
+// 70. Polymorphic Relation
+// Lấy owner của photo
+Route::get('/photo/{id}/post', function($id){
+    // Lấy ra photo
+    $photo = Photo::findOrFail($id);
+    // Lấy ra owner
+    return $photo->imageable;
+});
+
+// 71, 72. Polymorphic Relation - Many to Many
+// 1. Tạo Model Video
+// php artisan make:model Video -m
+// Tạo ra Migration create_videos_table và Model Video
+// 2. Tạo Model Tag
+// php artisan make:model Tag -m
+// Tạo ra Migration create_tags_table và Model Tag
+// 3. Tạo Model Taggable
+// php artisan make:model Taggable -m
+// Tạo ra Migration create_taggables_table và Model Taggable
+// 4. Định nghĩa Migration
+//   4.1 Video Migration (create_videos_table)
+//      Thêm $table->string('name')
+//   4.2 Tag Migration (create_tags_table)
+//      Thêm $table->string('name');
+//   4.3 Taggable Migration (create_taggables_table)
+//      - Comment out id - không cần increment id
+//      - Comment out timestamps - không cần timestamps
+//      - Thêm:
+//         $table->integer('tag_id');
+//         $table->integer('taggable_id');
+//         $table->integer('taggable_type');
+// 72.
+// 5. Trong Post Model - Viết quan hệ
+// 6. Trong Tag Model - Viết quan hệ
+// 73.
+// 7. Chạy Migration để tạo các bảng, trước khi thêm mới dữ liệu
+//  php artisan migrate
+// 8. Thêm dữ liệu
+// 9. Viết Route
+// Lấy ra các tag thuộc về một post có id truyền vào
+Route::get('/post/{id}/tag', function($id){
+    $post = Post::find($id);
+    foreach($post->tags as $tag){
+        echo $tag->name;
+    }
+});
+// *S - Lấy ra các tag thuộc về một post có id truyền vào
+Route::get('/video/{id}/tag', function($id){
+    $video = Video::find($id);
+    foreach($video->tags as $tag){
+        echo $tag->name;
+    }
+});
+
+// 74.
+Route::get('/tag/post', function(){
+    $tag = Tag::find(2);
+    foreach($tag->posts as $post){
+        echo $post->title;
     }
 });
 
