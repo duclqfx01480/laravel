@@ -529,3 +529,53 @@ Route::get('/tag/post', function(){
     }
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| CHAPTER 12: TINKER
+|--------------------------------------------------------------------------
+*/
+// 76. Tạo dữ liệu với Tinker
+// php artisan tinker -> để bắt đầu làm việc với Tinker
+// Thêm một post mới vào bảng posts: Cách 1
+// $post = App\Models\Post::create(['title'=>'PHP Post from Tinker','content'=>'PHP Content from Tinker'])
+
+// Cách thêm một dòng (Cách 2)
+// Tạo một instance của App\Models\Post
+// $post = new App\Models\Post
+// Sau đó có thể gán thuộc tính
+// $post->title = 'Davinci Code'
+// $post->content = 'by Dan Brown'
+// Lưu vào DB
+// $post->save()
+// Xem lại $post đã lưu vào bảng posts, có cả các cột updated_at, created_at,...
+
+// 77. Tìm kiếm một dòng dữ liệu và sử dụng constraints trong Tinker
+// $post = App\Models\Post::find(1)
+// $post = App\Models\Post::where('id',2)->first()
+// $post = App\Models\Post::whereId(3)->first()
+
+// 78. Cập nhật và xóa dữ liệu trong Tinker
+// 1. Cập nhật dữ liệu
+// Chọn ra dòng cần cập nhật
+// $post = App\Models\Post::find(3)
+// Tiến hành cập nhật
+// $post->title = 'Updated title'
+// $post->content = 'Update content'
+// Lưu cập nhật
+// $post->save()
+
+// 2. Xóa dữ liệu
+// Xóa dữ liệu (soft delete)
+// $post->delete()
+// Lấy những post đã soft delete (đưa vào trash)
+// $post = App\Models\Post::onlyTrashed()
+// Xóa hoàn toàn (permanently)
+// $post->forceDelete()
+
+// 79. Relation trong Tinker
+// $user = App\Models\User::find(1)
+// $user->posts
+// => không có kết quả, vì trong bảng posts không có user_id (Migration create_posts_table không có cột user_id)
+
+// $user->roles
